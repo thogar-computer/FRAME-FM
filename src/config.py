@@ -35,7 +35,7 @@ class OceanConfig:
 
     # Model
     input_dim: int = 5  # Latitude, Longitude, SST, pH, Species Observed
-    hidden_dim: int = 64
+    hidden_dim: int = 256
     num_classes: int = 3  # Low, Medium, High
     lr: float = 1e-3
     weight_decay: float = 1e-4
