@@ -10,6 +10,11 @@ from .model import MNISTClassifier
 from ..config import MNISTConfig
 
 
+from ..config import OceanConfig
+from .data_module_ocean import OceanEcologicalStressDataModule
+from .model_ocean import OceanStressClassifier
+
+
 def train(options: argparse.Namespace) -> None:
     """
     Select dataset/model based on CLI options and train with a shared
@@ -45,21 +50,34 @@ def train(options: argparse.Namespace) -> None:
         max_epochs = cfg.max_epochs
 
     elif options.ocean:
-        # When you're ready, uncomment + implement these:
-        #
-        # from .data_module_ocean import OceanEcologicalStressDataModule
-        # from .model_ocean import OceanStressClassifier
-        #
-        # batch_size = options.batch_size or 64
-        # max_epochs = options.epochs or 20
-        #
-        # dm = OceanEcologicalStressDataModule(batch_size=batch_size)
-        # model = OceanStressClassifier()
-        #
-        # experiment_name = "ocean_ecological_stress"
-        # ckpt_prefix = "ocean"
-        #
-        raise NotImplementedError("Ocean training not yet implemented.")
+
+        cfg = OceanConfig()
+
+        # Apply optional CLI overrides
+        if options.epochs is not None:
+            cfg.max_epochs = options.epochs
+        if options.batch_size is not None:
+            cfg.batch_size = options.batch_size
+
+        dm = OceanEcologicalStressDataModule(
+            batch_size=cfg.batch_size,
+            num_workers=cfg.num_workers,
+            val_size=cfg.val_size,
+            test_size=cfg.test_size,
+            random_state=cfg.random_state,
+        )
+
+        model = OceanStressClassifier(
+            input_dim=cfg.input_dim,
+            hidden_dim=cfg.hidden_dim,
+            num_classes=cfg.num_classes,
+            lr=cfg.lr,
+            weight_decay=cfg.weight_decay,
+        )
+
+        experiment_name = cfg.experiment_name
+        ckpt_prefix = "ocean"
+        max_epochs = cfg.max_epochs
     else:
         raise ValueError("No dataset option provided (use --mnist or --ocean).")
 
