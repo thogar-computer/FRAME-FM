@@ -1,0 +1,9 @@
+### Ignore code-loaded data 
+/data/MNIST
+
+### Ignore MLFLow Logs
+/mlruns
+
+### Ignore cache files
+__pycache__/
+*.pyc
